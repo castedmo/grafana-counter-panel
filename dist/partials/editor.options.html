@@ -1,18 +1,14 @@
 <div class="editor-row">
-	<div class="section gf-form-group">
-    <h5 class="section-heading">Colors</h5>
-      <div class="gf-form">
-        <label class="gf-form-label width-9">Digits</label>
-        <span class="gf-form-label">
-          <spectrum-picker ng-model="ctrl.panel.digitColor" ng-change="ctrl.changeColor()" ></spectrum-picker>
-        </span>
-      </div>
-      <div class="gf-form">
-        <label class="gf-form-label width-9">Back</label>
-        <span class="gf-form-label">
-          <spectrum-picker ng-model="ctrl.panel.backColor" ng-change="ctrl.changeColor()" ></spectrum-picker>
-        </span>
-      </div>
-  </div>
-
+	<div class="section">
+    <div class="tight-form last">
+      <ul class="tight-form-list">
+        <li class="tight-form-item">Do not refresh sooner than</li>
+        <li class="tight-form-item">
+          <input type=number ng-model="ctrl.panel.refreshMinSec" ng-change="ctrl.changeRefresh()" min=0></input>
+        </li>
+        <li class="tight-form-item last">seconds</li>
+      </ul>
+      <div class="clearfix"></div>
+    </div>
 	</div>
+</div>

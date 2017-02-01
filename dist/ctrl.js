@@ -91,8 +91,9 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
         decimals: 2, // decimal precision
         format: 'none', // unit format
         operatorName: 'total', // operator applied to time series
-        digitColor: "#ccc",
-        backColor: "rgb(147, 238, 132)"
+        refreshMinSec: 60
+        //digitColor: "#ccc",
+        //backColor: "rgb(147, 238, 132)",
       };
 
       _export('MetricsPanelCtrl', _export('CounterPanelCtrl', CounterPanelCtrl = function (_MetricsPanelCtrl) {
@@ -122,6 +123,8 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             countdown: true
           });
           _this.statChangeInterval = null;
+          _this.lastRefreshTime = new Date(2016, 1, 1, 1, 1, 1);
+          _this.newData = false;
           _this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
           _this.events.on('render', _this.onRender.bind(_this));
           _this.events.on('data-received', _this.onDataReceived.bind(_this));
@@ -136,8 +139,8 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             var panels = grafanaBootData.settings.panels;
             var thisPanel = panels[this.pluginId];
             var thisPanelPath = thisPanel.baseUrl + '/';
-            //var optionsPath = thisPanelPath + 'partials/editor.options.html';
-            //this.addEditorTab('Options', optionsPath, 2);
+            var optionsPath = thisPanelPath + 'partials/editor.options.html';
+            this.addEditorTab('Options', optionsPath, 2);
           }
         }, {
           key: 'setContainer',
@@ -190,10 +193,12 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             return actualHeight;
           }
         }, {
+          key: 'changeRefresh',
+          value: function changeRefresh() {}
+        }, {
           key: 'onRender',
           value: function onRender() {
-            this.setValues(this.data);
-
+            ///this.setValues(this.data);
             if (typeof this.data.value !== 'undefined') {
               this.parentElem.find('.grafana-stat-counter-value-container').css('height', this.height + 'px');
               if ($('.grafana-stat-counter-value').children().length === 0) {
@@ -201,21 +206,31 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
                   clockFace: 'Counter',
                   countdown: true
                 });
-              } else this.statCounter.setTime(this.data.value);
+              }
+              //      else
+              //        this.statCounter.setTime(this.data.value);
 
-              if (typeof this.series[0] !== 'undefined' && _.size(this.series[0].datapoints) > 1) {
+              if (this.newData && typeof this.series[0] !== 'undefined' && _.size(this.series[0].datapoints) > 1) {
+                this.newData = false;
                 var dataPoints = this.series[0].datapoints;
-                var lastFullBucket = dataPoints[dataPoints.length - 2];
-                var timeDiff = _.last(dataPoints)[1] - lastFullBucket[1];
-                var rate = Math.floor(timeDiff / lastFullBucket[0]);
-                //console.log("rate: " + rate);
+                var whole = this.data.value;
+                //for (var i=0; i<dataPoints.length; i++)
+                //whole += dataPoints[i][0];
+
+                var lastPoint = dataPoints[dataPoints.length - 1];
+                var prevPoint = dataPoints[dataPoints.length - 2];
+                var timeDiff = lastPoint[1] - prevPoint[1];
+                var rate = Math.floor(timeDiff / lastPoint[0]);
+                this.statCounter.setTime(whole - lastPoint[0]);
                 if (rate > 0) {
                   if (this.statChangeInterval) clearInterval(this.statChangeInterval);
                   var sc = this.statCounter;
-                  this.statChangeInterval = setInterval(function () {
-                    //for (var i=0; i<7; i++)
-                    sc.increment();
-                  }, rate);
+                  if (isFinite(rate)) {
+                    this.statChangeInterval = setInterval(function () {
+                      //for (var i=0; i<7; i++)
+                      sc.increment();
+                    }, rate);
+                  }
                 }
               }
             }
@@ -408,15 +423,18 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
         }, {
           key: 'onDataReceived',
           value: function onDataReceived(dataList) {
+
             this.series = dataList.map(this.seriesHandler.bind(this));
             var data = {};
             this.setValues(data);
             this.data = data;
-            //console.log("Data value: " + data.value + " formatted: " + data.valueFormatted + " rounded: " + data.valueRounded);
-            //var fmtTxt = kbn.valueFormats[this.panel.format];
-            //console.log("Format: " + fmtTxt);
-            this.render();
-            //this.gaugeObject.updateGauge(data.value, data.valueFormatted, data.valueRounded);
+
+            var now = Date.now();
+            if (Math.floor(now - this.lastRefreshTime) >= this.panel.refreshMinSec * 1000) {
+              this.newData = true;
+              this.lastRefreshTime = now;
+              this.render();
+            }
           }
         }, {
           key: 'seriesHandler',
