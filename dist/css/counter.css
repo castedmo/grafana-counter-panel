@@ -1,0 +1,54 @@
+.flip-clock-wrapper {
+    margin: 0 !important;
+}
+
+.flip-clock-wrapper {
+    margin: 0 !important;
+}
+
+.flip-clock-wrapper ul {
+    width: 45px !important;
+}
+
+.flip-clock-wrapper ul li a div div.inn {
+    font-size: 60px !important;
+}
+
+.flip-clock-wrapper {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+.grafana-stat-counter-value ul li a div div.inn {
+    color: #ccc !important;
+    text-shadow: 0 1px 35px #333 !important;
+}
+
+.flip-clock-wrapper ul {
+    background: #000000 !important;
+    background: rgba(0, 0, 0, 0.48) !important;
+}
+
+.grafana-stat-counter-value .inn {
+    background-color: #20511e !important;
+}
+
+.grafana-stat-counter{
+    display:table; 
+    width:100%;
+}
+.grafana-stat-counter-value-container
+{
+    vertical-align: middle;
+    text-align: center;
+    display: table-cell;    
+}
+.grafana-stat-counter-value{
+    vertical-align: middle;
+    text-align: center;
+}
+
+
+panel-plugin-mms-flip-counter-panel .panel-content{
+    padding: 0px;
+}

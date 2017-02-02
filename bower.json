@@ -1,0 +1,24 @@
+{
+  "name": "mms-counter-panel",
+  "description": "Stat counter panel for Grafana",
+  "main": "",
+  "authors": [
+    "Mohammad Saboorian <saboorian@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "grafana3 singlestat counter"
+  ],
+  "homepage": "https://github.com/saboorian/grafana-counter-panel",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}

@@ -1,0 +1,31 @@
+{
+    "type": "panel",
+    "name": "Flip Counter",
+    "id": "mms-flip-counter-panel",
+    "info": {
+        "description": "Flip counter panel for Grafana",
+        "author": {
+            "name": "Mohammad Saboorian (saboorian@gmail.com)",
+            "url": "https://github.com/saboorian"
+        },
+        "keywords": ["flip counter", "counter", "panel"],
+        "links": [{
+            "name": "Project site",
+            "url": "https://github.com/saboorian/grafana-counter-panel"
+        }, {
+            "name": "MIT License",
+            "url": "https://github.com/saboorian/grafana-counter-panel/blob/master/LICENSE"
+        }],
+        "screenshots": [{
+            "name": "Showcase",
+            "path": "screenshots/counter1.png"
+        }],
+        "version": "0.0.2",
+        "updated": "2017-01-18"
+    },
+
+    "dependencies": {
+        "grafanaVersion": "3.x.x",
+        "plugins": []
+    }
+}
