@@ -124,6 +124,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
           });
           _this.statChangeInterval = null;
           _this.lastRefreshTime = new Date(2016, 1, 1, 1, 1, 1);
+          _this.refreshRate = 0;
           _this.newData = false;
           _this.events.on('init-edit-mode', _this.onInitEditMode.bind(_this));
           _this.events.on('render', _this.onRender.bind(_this));
@@ -222,14 +223,17 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
                 var timeDiff = lastPoint[1] - prevPoint[1];
                 var rate = Math.floor(timeDiff / lastPoint[0]);
                 this.statCounter.setTime(whole - lastPoint[0]);
+                if (this.statChangeInterval) clearInterval(this.statChangeInterval);
                 if (rate > 0) {
-                  if (this.statChangeInterval) clearInterval(this.statChangeInterval);
                   var sc = this.statCounter;
                   if (isFinite(rate)) {
+                    this.refreshRate = rate;
                     this.statChangeInterval = setInterval(function () {
                       //for (var i=0; i<7; i++)
                       sc.increment();
                     }, rate);
+                  } else {
+                    this.refreshRate = 0;
                   }
                 }
               }
@@ -430,7 +434,7 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
             this.data = data;
 
             var now = Date.now();
-            if (Math.floor(now - this.lastRefreshTime) >= this.panel.refreshMinSec * 1000) {
+            if (this.refreshRate === 0 || Math.floor(now - this.lastRefreshTime) >= this.panel.refreshMinSec * 1000) {
               this.newData = true;
               this.lastRefreshTime = now;
               this.render();

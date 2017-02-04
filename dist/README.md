@@ -51,6 +51,9 @@ This panel is based on [FlipClock](http://flipclockjs.com/) and built upon [Graf
 
 #### Changelog
 
+##### v0.0.4
+- Always refresh if the previous rate calculation failed
+
 ##### v0.0.3
 - Throttle refresh frequency
 

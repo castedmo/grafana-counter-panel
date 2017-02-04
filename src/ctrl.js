@@ -64,6 +64,7 @@ class CounterPanelCtrl extends MetricsPanelCtrl {
     });
     this.statChangeInterval = null;
     this.lastRefreshTime = new Date(2016, 1, 1, 1, 1, 1);
+    this.refreshRate = 0;
     this.newData = false;
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('render', this.onRender.bind(this));
@@ -160,15 +161,18 @@ class CounterPanelCtrl extends MetricsPanelCtrl {
         var timeDiff = lastPoint[1] -  prevPoint[1];
         var rate = Math.floor(timeDiff / lastPoint[0]);
         this.statCounter.setTime(whole-lastPoint[0]);
+        if (this.statChangeInterval)
+          clearInterval(this.statChangeInterval);
         if (rate > 0) {
-          if (this.statChangeInterval)
-            clearInterval(this.statChangeInterval);
           var sc = this.statCounter;
           if (isFinite(rate)){
+            this.refreshRate = rate;
             this.statChangeInterval = setInterval(function () {
               //for (var i=0; i<7; i++)
                 sc.increment();
             }, rate);
+          }else{
+            this.refreshRate = 0;
           }
         }
       }
@@ -357,7 +361,7 @@ class CounterPanelCtrl extends MetricsPanelCtrl {
     this.data = data;
 
     var now = Date.now();
-    if (Math.floor(now - this.lastRefreshTime) >= this.panel.refreshMinSec*1000){
+    if (this.refreshRate === 0 ||  Math.floor(now - this.lastRefreshTime) >= this.panel.refreshMinSec*1000){
       this.newData = true;
       this.lastRefreshTime = now;
       this.render();
