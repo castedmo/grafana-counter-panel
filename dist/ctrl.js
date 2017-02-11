@@ -222,8 +222,8 @@ System.register(['app/plugins/sdk', 'lodash', 'jquery', 'app/core/utils/kbn', 'a
                 var prevPoint = dataPoints[dataPoints.length - 2];
                 var timeDiff = lastPoint[1] - prevPoint[1];
                 var rate = Math.floor(timeDiff / lastPoint[0]);
-                this.statCounter.setTime(whole - lastPoint[0]);
                 if (this.statChangeInterval) clearInterval(this.statChangeInterval);
+                this.statCounter.setTime(whole - lastPoint[0]);
                 if (rate > 0) {
                   var sc = this.statCounter;
                   if (isFinite(rate)) {
